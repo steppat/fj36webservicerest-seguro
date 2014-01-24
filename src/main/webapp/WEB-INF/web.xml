@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0"> 
+      
+  <filter>
+  	<filter-name>OAuth2Filter</filter-name>
+  	<filter-class>br.com.caelum.payfast.filter.Oauth2Filter</filter-class>
+  </filter>    
+  
+  <filter-mapping>
+  	<filter-name>OAuth2Filter</filter-name>
+  	<url-pattern>/v1/pagamento/*</url-pattern>
+  </filter-mapping>
+  
+      
+  <context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>WEB-INF/beans.xml</param-value>
+	</context-param>
+ 	<context-param>
+		<param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+		<param-value>messages</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
+		<param-value>pt_BR</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.servlet.jsp.jstl.fmt.fallbackLocale</param-name>
+		<param-value>pt_BR</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>br.com.caelum.vraptor.encoding</param-name>
+		<param-value>UTF-8</param-value>
+	</context-param>
+	
+	<servlet>
+		<servlet-name>Resteasy</servlet-name>
+		<servlet-class>
+			org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Resteasy</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	
+	<context-param>
+		<param-name>resteasy.scan</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	
+	<listener>
+		<listener-class>
+			org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
+		</listener-class>
+	</listener>
+	
+</web-app>
