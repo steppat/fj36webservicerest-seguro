@@ -15,11 +15,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.error.OAuthError;
@@ -93,22 +88,23 @@ public class Oauth2Filter implements Filter {
 	}
 	
 	private boolean isValidToken(String token) {
-		boolean validToken = false;
-		try {
-			Client c = ClientBuilder.newClient();
-			URL restUrl = new URL(OAUTH_SERVER_URL + "oauth/token/" + token);
-			
-			WebTarget target = c.target(restUrl.toURI());
-			
-			Response response = target.request().get();
-			
-			validToken = Status.OK.getStatusCode() == response.getStatus();
-
-		} catch (URISyntaxException | MalformedURLException e) {
-	
-			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "error trying to access oauth server", e);
-		
-		}
-		return validToken;
+//		boolean validToken = false;
+//		try {
+//			Client c = ClientBuilder.newClient();
+//			URL restUrl = new URL(OAUTH_SERVER_URL + "oauth/token/" + token);
+//			
+//			WebTarget target = c.target(restUrl.toURI());
+//			
+//			Response response = target.request().get();
+//			
+//			validToken = Status.OK.getStatusCode() == response.getStatus();
+//
+//		} catch (URISyntaxException | MalformedURLException e) {
+//	
+//			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "error trying to access oauth server", e);
+//		
+//		}
+//		return validToken;
+		return true;
 	}
 }

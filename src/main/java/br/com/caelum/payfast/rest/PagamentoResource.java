@@ -6,21 +6,20 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import javax.websocket.server.PathParam;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.caelum.payfast.modelo.Pagamento;
 import br.com.caelum.payfast.modelo.Transacao;
 
-@Path("/v1/pagamento")
+@RequestMapping("/v1/pagamento")
 public class PagamentoResource {
 
 	private static Map<Integer, Pagamento> REPO = new HashMap<>();
@@ -40,9 +39,8 @@ public class PagamentoResource {
 		REPO.put(pagamento.getId(), pagamento);
 	}
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response criarPagamento(Transacao transacao)
+	@PostMapping(consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> criarPagamento(Transacao transacao)
 			throws URISyntaxException {
 
 		if (REPO.size() > 1000) {
@@ -59,31 +57,28 @@ public class PagamentoResource {
 		REPO.put(pagamento.getId(), pagamento);
 
 		System.out.println("PAGAMENTO CRIADO " + pagamento);
-		return Response.created(new URI("/v1/pagamento/" + pagamento.getId()))
-				.entity(pagamento).type(MediaType.APPLICATION_JSON).build();
+		return ResponseEntity.created(new URI("/v1/pagamento/" + pagamento.getId()))
+				.body(pagamento);
 	}
 
 	private Integer nextId() {
 		return idPagamento++;
 	}
 
-	@PUT
-	@Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response confirmarPagamento(@PathParam("id") Integer pagamentoId) throws URISyntaxException {
+	@PutMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> confirmarPagamento(@PathVariable("id") Integer pagamentoId) throws URISyntaxException {
 		
 		Pagamento pagamento = REPO.get(pagamentoId);
-		Response response = null;
+		ResponseEntity<?> response = null;
 		
 		if ( pagamento == null ) {
 
-			response = Response.status(Status.NOT_FOUND).build();
+			response = ResponseEntity.notFound().build();
 		
 		} else {
 			pagamento.comStatusConfirmado();
 		
-			response = Response.ok(new URI("/v1/pagamento/" + pagamento.getId()))
-					.entity(pagamento).type(MediaType.APPLICATION_JSON).build();
+			response = ResponseEntity.ok().body(pagamento);
 		
 			System.out.println("Pagamento confirmado: " + pagamento);
 
@@ -92,9 +87,7 @@ public class PagamentoResource {
 		return response;
 	}
 
-	@GET
-	@Path("/{id}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@GetMapping(value="/{id}", produces={ MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public Pagamento buscaPagamento(@PathParam("id") Integer id) {
 		return REPO.get(id);
 	}
