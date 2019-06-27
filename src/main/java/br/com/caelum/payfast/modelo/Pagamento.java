@@ -3,9 +3,12 @@ package br.com.caelum.payfast.modelo;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Pagamento {
 
 	private static final String STATUS_CANCELADO = "CANCELADO";

@@ -1,5 +1,9 @@
 package br.com.caelum.payfast.modelo;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Link {
 
 	private String rel;
