@@ -1,15 +1,11 @@
 package br.com.caelum.payfast.filter;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -24,21 +20,21 @@ import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.message.types.ParameterStyle;
 import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest;
 import org.apache.oltu.oauth2.rs.response.OAuthRSResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Utiliza Apache Oltu para proteger o serviço {@link PagamentoSeguroResource}
  */
+@Component 
 public class Oauth2Filter implements Filter {
-
+	
 	private static final String OAUTH_SERVER_URL = "http://fj36webservicerest-oauthserver.herokuapp.com/";
 	private static String RESOURCE_SERVER_NAME = "pagamentos";
-		
-    @Override
-	public void destroy() {	}
 
-    @Override
-	public void init(FilterConfig fConfig) throws ServletException {     }
-	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		
@@ -88,7 +84,13 @@ public class Oauth2Filter implements Filter {
 	}
 	
 	private boolean isValidToken(String token) {
-//		boolean validToken = false;
+		System.out.println(token);
+		
+		boolean validToken = false;
+		
+		ResponseEntity<String> response = new RestTemplate().getForEntity(OAUTH_SERVER_URL + "oauth/" + token, String.class);
+		validToken = HttpStatus.OK == response.getStatusCode();
+		
 //		try {
 //			Client c = ClientBuilder.newClient();
 //			URL restUrl = new URL(OAUTH_SERVER_URL + "oauth/token/" + token);
@@ -104,7 +106,6 @@ public class Oauth2Filter implements Filter {
 //			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "error trying to access oauth server", e);
 //		
 //		}
-//		return validToken;
-		return true;
+		return validToken;
 	}
 }
